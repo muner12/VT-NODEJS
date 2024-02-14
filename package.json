@@ -1,0 +1,11 @@
+{
+  "name": "vt-nodejs",
+  "version": "1.0.0",
+  "description": "This is Node js practive project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bakht Munir",
+  "license": "ISC"
+}
