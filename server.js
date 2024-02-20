@@ -1,19 +1,36 @@
-const date=require('./customModules/date');
-const Math=require('./customModules/math');
-const http=require("http");
+const http=require('http');
+const http2=require('http2');
+const readline=require('readline');
 
 
-let obj=new Math();
-console.log(obj.bubbleSort([6,1,9,2,4,7]));
+
+
+
+
+const HOST='localhost';
+const PORT=8080;
+//node js server
 
 let server=http.createServer((req,res)=>{
 
-    console.log(req.headers)
+    console.log(req)
 
-    res.end("hello from  server");
-})
+res.end("Welcome");
+console.log(res.getHeaders())
 
-
-server.listen(8080,()=>{
-console.log("server started");
+   
 });
+//
+let options = {
+    host: 'www.geeksforgeeks.org',
+    path: '/courses',
+    method: 'GET'
+};
+
+
+
+server.listen(PORT,HOST,()=>{
+
+    console.log(`listening on port http://${HOST}:${PORT}`);
+});
+
