@@ -2,7 +2,8 @@ const http=require('http');
 const http2=require('http2');
 const readline=require('readline');
 
-
+const data=require('./data/data.json');
+const { getAllProducts } = require('./controller/productController');
 
 
 
@@ -13,12 +14,10 @@ const PORT=8080;
 
 let server=http.createServer((req,res)=>{
 
-    console.log(req)
+    console.log(req.protocol,req.url,req.originalUrl);
+    console.log(req);
+    res.end("ok")
 
-res.end("Welcome");
-console.log(res.getHeaders())
-
-   
 });
 //
 let options = {
