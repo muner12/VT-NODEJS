@@ -1,6 +1,8 @@
 const http = require("http");
 const fs = require("fs");
 const url = require("url");
+const multer=require('multer');
+
 
 // let print=(data)=>{
 //      console.log(data);
@@ -44,23 +46,52 @@ const url = require("url");
 
 // server.listen(8080);
 
+const Storage=multer.diskStorage({
+     destination:(req,file,cb)=>{
+          cb(null,"./uploads")
+     },
+     filename:(req,file,cb)=>{
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+          cb(null, file.fieldname + '-' + uniqueSuffix)
+     }
+})
+let upload=multer( {storage:Storage});
 const server = http.createServer((req, res) => {
+    
   let body = [];
   const reqUrl = url.parse(req.url, true);
-
+     if(req.url!=='/upload'){
   req.on("data", (chunk) => {
-    console.log(chunk.toString());
+  
     // let postData=JSON.parse(chunk);
     // body.push(postData);
-    if (chunk) {
+  
+    
+     console.log("get executed")
       postData = chunk.toString();
 
       postData = JSON.parse(postData);
       body.push(postData);
-    }
+    
   });
 
-  if (req.url === "/postData" && req.method === "POST") {
+}
+  if(req.url==="/" && req.method==='GET'){
+
+     req.on('end',()=>{
+
+          fs.readFile("view/form.html",(error,data)=>{
+               if(error){
+                    res.writeHead(500);
+                    res.end("Internal Server Error");
+               }else{
+                    res.writeHead(201,{"Content-Type":"text/html"});
+                    res.end(data);
+               }
+          })
+     })
+
+  }else if (req.url === "/postData" && req.method === "POST") {
     req.on("end", () => {
       res.end(JSON.stringify(body));
     });
@@ -83,7 +114,16 @@ const server = http.createServer((req, res) => {
     res.writeHead(200);
 
     res.end(JSON.stringify(reqUrl.query));
-  } else {
+  } else if(req.url==="/upload" && req.method==="POST"){
+     console.log("upload hited")
+          req.on('end',()=>{
+
+              res.end("uploaded")
+               
+            
+          })
+
+  }else {
     res.writeHead(405, { Allow: "POST", "content-type": "text/plain" });
     res.end("only Post Method allowed");
   }
