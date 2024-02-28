@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
 </head>
 <body>
     <div>
@@ -11,8 +12,49 @@
         <form action="/upload" method="post" enctype="multipart/form-data">
             <input type="file" name="file"/>
             <input type="submit" value="Submit"/>
-            
+            <button type="button" onclick={clickHandler()}>Download</button>
         </form>
     </div>
+<script>
+   function downloadPdfFromApi(url, filename) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            
+            const pdfUrl = window.URL.createObjectURL(blob);
+            
+          
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.setAttribute('download', filename);
+            
+          
+            document.body.appendChild(link);
+            
+            
+            link.click();
+            
+          
+            link.parentNode.removeChild(link);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+let  clickHandler = ()=>{
+  console.log("clicked")
+const apiUrl = 'http://localhost:3000/download';
+const filename = 'downloaded_file.pdf';
+downloadPdfFromApi(apiUrl, filename);
+}
+
+</script>
 </body>
+
 </html>

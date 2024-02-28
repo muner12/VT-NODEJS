@@ -6,6 +6,7 @@ const url=require('url');
 
 const { getAllProducts } = require('./controller/productController');
 const path = require('path');
+const { error } = require('console');
 
 
 
@@ -28,8 +29,9 @@ let server=http.createServer((req,res)=>{
             data=JSON.parse(data);
             filename=data.collection
             data=data.data;
-            
-            console.log("req body  data",data);
+            data={id:Date.now(),...data};
+
+        
             
             body.push(data);
         })
@@ -49,6 +51,7 @@ let server=http.createServer((req,res)=>{
 
                      let fileData=JSON.parse(data1);
                        fileData.push(body[0]);
+                       console.log(fileData);
                        let uploaddata=JSON.stringify(fileData,2,null);
                       fs.writeFile("db/"+filename+".json",uploaddata,(error)=>{
                         if(error){
@@ -98,6 +101,48 @@ let server=http.createServer((req,res)=>{
         })
 
 
+    }else if(pathname==="/updateData" && req.method=="PUT" ){
+
+        req.on('end',()=>{
+            fs.readFile("db/"+filename+".json",'utf-8',(error,data)=>{
+                if(error){
+                    res.writeHead(500);
+                    res.end(JSON.stringify({Message:"Internal Server Error put"}));
+                }else{
+                    let updateData=JSON.parse(data);
+                    console.log(updateData.length,"before update")
+                  let oneRecord=updateData.filter(item=>item.id===body[0].id);
+                 
+                  if(oneRecord.length>0){
+                    let reduceData=updateData.reduce(item=>item.id===body[0].id);
+                    console.log(reduceData.length,"after update")
+                    updateData={
+                        id:body[0].id,
+                        name:body[0]?.name,
+                        email:body[0]?.email,
+                        contact:body[0]?.contact,
+                        address:body[0]?.address
+                    };
+                    
+
+
+                    res.end(JSON.stringify(updateData));
+
+                  }else{
+                    res.writeHead(404);
+                    res.end(JSON.stringify({Message:'No Record Found'}))
+                  }
+           
+                    
+
+                }
+            })
+
+            
+
+
+        })
+      
     }else{
         res.writeHead(404);
         res.end(JSON.stringify({message:"Route NOt Found"}));
