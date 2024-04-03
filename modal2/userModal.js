@@ -6,6 +6,7 @@ const userScema=new mongoose.Schema({
     email: { type: String},
     age:{type:Number},
     phone:{type:String},
+    _id:{type:Number,required:true,unique:true},
     
     
 
@@ -14,6 +15,6 @@ const userScema=new mongoose.Schema({
 
 
 
-const User=mongoose.model('User',userScema);
+const User=mongoose.model('CounterUser',userScema);
 
 module.exports=User;
