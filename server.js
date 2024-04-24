@@ -1,18 +1,23 @@
 const express = require('express')
 const dotenv = require('dotenv').config();
-const xlsx=require('xlsx')
+
+
+
+const dbConnection=require('./config/dbConnection');
+const dbConnectionError=require('./middleware/dbConnectionError')
+const routes = require('./routes/index')
+
+
+//experss server
 const app = express()
+app.use(express.json());
+dbConnection();
+app.use(dbConnectionError);
+app.use('/api',routes);
 const port = process.env.PORT || 3001;
 
 
-const excelFile=xlsx.readFile('data/data.xlsx');
-const sheetName=excelFile.SheetNames[0];
 
-const workSheet=excelFile.Sheets[sheetName];
-
-const data=xlsx.utils.sheet_to_json(workSheet);
-
-console.log(data)
 
 
 
