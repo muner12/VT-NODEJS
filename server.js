@@ -7,15 +7,15 @@ const errorMiddleare=require('./middlewares/errorMiddleware')
 //experss server
 const app = express()
 app.use(express.json());
-console.log(process.pid)
-dbConnection();
-app.use('/api',route);
+
+//dbConnection();
+
 const port = process.env.PORT || 3001;
 
-console.log(os.availableParallelism())
+console.log("server is hit")
+app.use('/api',route);
 
 
-app.use(errorMiddleare)
 
 
 
