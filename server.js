@@ -1,21 +1,24 @@
+const { default: mongoose } = require('mongoose');
 const express = require('express')
 const os=require('os')
-const dbConnection=require('./config/dbConnection');
-const route=require('./routes/index');
-const errorMiddleare=require('./middlewares/errorMiddleware')
+
+
+const DbConnection=require('./config/dbConnection');
+const Route=require('./routes/route')
+
+
 
 //experss server
 const app = express()
 app.use(express.json());
-console.log(process.pid)
-dbConnection();
-app.use('/api',route);
+
+new DbConnection().dbConnection();
+app.use('/api',new Route().Router);
 const port = process.env.PORT || 3001;
 
-console.log(os.availableParallelism())
 
 
-app.use(errorMiddleare)
+
 
 
 

@@ -1,30 +1,33 @@
-const { ValidationError } = require("joi")
+const { default: mongoose } = require("mongoose")
 
-
-const errorMiddleware = (err, req, res, next) => {
+class Error{
+    constructor(err,req,res,next){
+        this.err=err
+        this.req=req
+        this.res=res
+        this.next=next
+    }
     
 
-    if (err instanceof ValidationError) {
-
-        const {details}=err
-       
-        if(details[0].type=="any.invalid"){
-          return  res.status(400).json({
-                STATUS:'FAILED',
-                ERROR_CODE:'VALIDATION_ERROR',
-                ERROR_MESSAGE:details[0].context.message,
-                
+    dbConnectionError(){
+        mongoose.connection.on('error', (err) => {
+            this.res.status(500).json({
+                STATUS:"FAILED",
+                ERROR_CODE:"DB_CONNECTION_ERROR",
+                ERROR_MESSAGE:err
             })
-        }
+        });
 
-      return  res.status(400).json({
-            STATUS:'FAILED',
-            ERROR_CODE:'VALIDATION_ERROR',
-            ERROR_MESSAGE:details[0].message
-        })
+       if( mongoose.connection.readyState!==2){
+           this.res.status(500).json({
+               STATUS:"FAILED",
+               ERROR_CODE:"DB_CONNECTION_ERROR",
+               ERROR_MESSAGE:"DB Connection Error"
+           })
+       }
+    }
 
-     
 }
 
-}
-module.exports = errorMiddleware
+
+module.exports=Error

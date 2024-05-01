@@ -1,14 +1,31 @@
 const mongoose =require('mongoose')
 const dotenv = require('dotenv').config();
-const dbConnection = async () => {
-    try {
-        const con=await mongoose.connect(process.env.MONGO_URL);
+
+
+class DbConnection{
+    url=process.env.MONGO_URL
+
+
+
+    
+    async dbConnection(){
+        try {
+        const con=await mongoose.connect(this.url);
+      console.log(mongoose.connection.readyState)
         console.log(`MongoDB Connected: ${con.connection.host}`)
-    } catch (error) {
-        console.log(error);
+        } catch (error) {
+            console.log(error);
+        }
     }
+
 }
 
 
 
-module.exports = dbConnection
+
+
+
+
+
+
+module.exports = DbConnection
