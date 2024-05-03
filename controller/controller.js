@@ -9,7 +9,21 @@ const Comment=require('../model/comment')
 
 
 const  addAuther=async(req,res,next)=>{
-    
+
+    try {
+        
+        fond=await Auther.findOne({email:req.body.email});
+        if(fond){
+          return  res.status(422).json({
+                STATUS:'Failed',
+                ERROR:"ALREADY_REGISTERED"
+            })
+        }
+        
+    } catch (error) {
+        console.log(error);
+        
+    }
     try {
         
     const auther=new Auther({
@@ -41,7 +55,12 @@ const addComment=async(req,res,next)=>{
         
         });
 
+        
         let result=await comment.save();
+
+         
+
+
         res.status(200).json(result);
 
 
@@ -140,8 +159,30 @@ const populate=async(req,res,next)=>{
     try {
         
       // Find author and populate comments, shares, and likes
-     let data=await Post.findOne().populate('auther');
-
+      let data= await Post.find()
+      .populate(
+        {
+          path: 'auther',
+          populate: {
+            path: 'posts',
+            model: 'Post',
+            populate: {
+              path: 'comments',
+              model: 'Comment'
+            },
+            populate: {
+              path: 'likes',
+              model: 'Like'
+            },
+            populate: {
+              path: 'shares',
+              model: 'Share'
+            }
+          }
+        }
+      )
+      
+    
 res.status(200).json(data);
 
 
