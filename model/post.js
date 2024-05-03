@@ -11,6 +11,13 @@ const schema = new mongoose.Schema({
 
 
 
+schema.methods.addLike=(userId)=>{
+this.likes.push(userId)
+}
+
+
+
+
 const Post=mongoose.model('Post',schema);
 
 
