@@ -12,7 +12,18 @@ const schema = new mongoose.Schema({
 
 
 schema.methods.addLike=(userId)=>{
-this.likes.push(userId)
+this.likes.push(userId);
+return this.save();
+}
+
+schema.methods.addComment=(commentId)=>{
+  this.comments.push(commentId);
+  return this.save();
+}
+
+schema.methods.addShare=(shareId)=>{
+  this.shares.push(shareId);
+  return this.save();
 }
 
 

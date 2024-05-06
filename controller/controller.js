@@ -55,10 +55,11 @@ const addComment=async(req,res,next)=>{
         
         });
 
-        
+       
         let result=await comment.save();
-
-         
+        let post=await Post.findById(req.body.post);
+        post.comments.push(result._id);
+        post.save();
 
 
         res.status(200).json(result);
@@ -123,6 +124,9 @@ const addLike=async(req,res,next)=>{
             auther:req.body.auther
         });
         let result=await like.save();
+        let post=await Post.findById(req.body.post);
+        post.likes.push(result._id);
+        post.save();
         res.status(200).json(result);
     } catch (error) {
         console.log(error)
@@ -148,6 +152,9 @@ const addShare=async(req,res,next)=>{
         })
 
         let result=await share.save();
+        let post=await Post.findById(req.body.post);
+        post.shares.push(result._id);
+        post.save();
         res.status(200).json(result);
     } catch (error) {
         console.log(error)
@@ -159,28 +166,10 @@ const populate=async(req,res,next)=>{
     try {
         
       // Find author and populate comments, shares, and likes
-      let data= await Post.find()
-      .populate(
-        {
-          path: 'auther',
-          populate: {
-            path: 'posts',
-            model: 'Post',
-            populate: {
-              path: 'comments',
-              model: 'Comment'
-            },
-            populate: {
-              path: 'likes',
-              model: 'Like'
-            },
-            populate: {
-              path: 'shares',
-              model: 'Share'
-            }
-          }
-        }
-      )
+      let data= await Post.find().populate('auther')
+      .populate('comments')
+      .populate('likes')
+      .populate('shares');
       
     
 res.status(200).json(data);
