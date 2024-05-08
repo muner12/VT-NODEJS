@@ -1,22 +1,18 @@
-const experss = require('express')
-const controller=require('../controller/controller')
-const vaccanyController=require('../controller/vaccancyController')
-const router = experss.Router()
+const express = require('express');
+const data=require('../data/data')
+const router = express.Router();
+const {upload}=require('../controller/register')
+router.get('/chatData', (req, res) => {
 
-router.post('/RegisterAuthor',controller.addAuther);
-router.post('/AddPost',controller.addPost);
-router.post('/AddComment',controller.addComment);
-router.post('/AddLike',controller.addLike);
-router.post('/AddShare',controller.addShare);
-router.get('/Populate',controller.populate);
-//submit application
+res.status(200).json({data:data});
+
+})
 
 
-router.post('/addApplicant',vaccanyController.addApplicants)
-router.post('/addVaccancy',vaccanyController.addVaccancy)
+router.post('/upload',upload.single('file'),(req,res)=>{
+   
+    res.status(200).json({data:req.file.filename});
+});
 
-router.post('/applyVaccancy',vaccanyController.submitApplication)
-router.post('/findAllApplies',vaccanyController.findAllApplies)
 
-
-module.exports=router
+module.exports = router
