@@ -67,13 +67,26 @@ const signup = () => {
             })
             
             const response=await data.json();
-            toast({
-                title:"Registration Successful",
-                status:"success",
-                duration:5000,
-                isClosable:true,
-                position:"bottom"
-            })
+            if(response.message=="User already exists"){
+                toast({
+                    title:"User Already Exists",
+                    status:"success",
+                    duration:5000,
+                    isClosable:true,
+                    position:"bottom"
+                })
+            }
+            if(response.message=="User created successfully"){
+                toast({
+                    title:"User Created Successfully",
+                    status:"success",
+                    duration:5000,
+                    isClosable:true,
+                    position:"bottom"
+                })
+            }
+            
+            setPicLoading(false);
 
         } catch (error) {
             toast({
@@ -102,14 +115,33 @@ const signup = () => {
                 setPicLoading(false);
                 return
             }
-            const formdata=new FormData();
-            formdata.append("file",picture);
-        axios.post("http://localhost:8080/api/upload",formdata).then(response=>{
-             
-                console.log(response)
-            })
+
+            if(picture.type==="image/jpeg" || picture.type==="image/png"){
+                
+                const formdata=new FormData();
+                formdata.append("file",picture);
+            axios.post("http://localhost:8080/api/upload",formdata).then(response=>{
+                 
+                setPic(response.data.data);
+                setPicLoading(false)
+                })
+            }else{
+                toast({
+                    title:"Please Select an Image",
+                    status:"warning",
+                    duration:3000,
+                    isClosable:true,
+                    position:"bottom"
+                })
+                
+                setPicLoading(false);
+
+                return
+            }
+
     
  }
+ 
   return (
     <VStack spacing={"5px"}>
 
@@ -159,7 +191,7 @@ const signup = () => {
       </FormControl>
       <FormControl>
         <FormLabel>Upload Profile Picture</FormLabel>
-        <Input type="file" p={1.5} accept="image/*"  onChange={(e)=>postDetails(e.target.files[0])}/>
+        <Input type="file" p={1.5} id="fileInput" accept="image/*"   onChange={(e)=>postDetails(e.target.files[0])}/>
       </FormControl>
       <Button
         colorScheme="blue"
