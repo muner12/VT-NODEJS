@@ -1,6 +1,7 @@
 const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const User = require("../model/user");
+const JWT = require("../service/jwtService");
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "uploads/")
@@ -74,4 +75,57 @@ const register=async(req,res)=>{
     
 }
 
-module.exports = {upload,register}
+
+
+let login=async(req,res,next)=>{
+
+    if(!req.body.email || !req.body.password){
+        return res.status(400).json({message:"All fields are required"})
+    };
+
+    let user=await User.findOne({email:req.body.email});
+    if(!user){
+        return res.status(400).json(
+            {
+                MESSAGE:"Invalid email or password",
+                STATUS:'UNAUTHORISED',
+                STATUS_CODE:401
+
+            }
+        )
+    }
+    const isMatchPwd=await bcrypt.compare(req.body.password,user.password);
+    if(user && isMatchPwd){
+
+        accesstToken=JWT.accessToken({id:user._id});
+  
+       return res.status(200).json({
+            message:"Login successful",
+            STATUS:'AUTHORISED',
+            STATUS_CODE:200,
+            DATA:{
+                name:user.name,
+                email:user.email,
+                phone:user.phone,
+                image:user.pic,
+                token:accesstToken
+            }
+        })
+
+
+    }else{
+        return res.status(400).json(
+            {
+                MESSAGE:"Invalid email or password",
+                STATUS:'UNAUTHORISED',
+                STATUS_CODE:401
+            }
+        )
+    }
+     
+
+
+
+}
+
+module.exports = {upload,register,login}
