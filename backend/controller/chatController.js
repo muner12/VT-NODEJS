@@ -133,7 +133,8 @@ const renameGroup=async(req,res,next)=>{
         }
 
         try{
-            let updateChat=await Chat.findByIdAndUpdate(chatId,{
+            let updateChat=await Chat.findByIdAndUpdate(
+                chatId,{
                 chatName:chatName
             },{
                 new:true

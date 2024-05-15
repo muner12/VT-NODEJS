@@ -8,11 +8,65 @@ import {
     InputRightElement,
     VStack,
   } from "@chakra-ui/react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { chatState } from './../../context/chatProvider';
+
 const login = () => {
     const [show, setShow] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     const handleClick = () => setShow(!show);
+    const navigate=useNavigate();
+    const {setUser}=chatState();
+    const loginHandler=async()=>{
+        setLoading(true)
+        if(!email || !password){
+            toast({
+                title:"Please Fill all the Feilds",
+                status:"warning",
+                duration:3000,
+                isClosable:true,
+                position:"bottom"
+            });
+            setLoading(false)
+            return
+        }
+
+        try {
+          
+          const data=await axios.post('http://localhost:8080/api/login',{email,password},{
+            headers:{
+              "Content-Type":"application/json"
+            }
+          });
+          setUser(data.data.DATA);
+          localStorage.setItem("userInfo",JSON.stringify(data.data.DATA));
+          setLoading(false);
+          navigate("/chats");
+        
+
+
+
+
+        } catch (error) {
+          toast({
+            title: "Error Occured!",
+            description: error.response.data.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+          setLoading(false);
+        }
+
+
+    }
+
+
+
   return (
     <VStack spacing={"5px"}>
 
@@ -43,7 +97,7 @@ const login = () => {
       colorScheme="blue"
       width="100%"
       style={{ marginTop: 15 }}
-     
+      onClick={loginHandler}
     >
       Login
     </Button>

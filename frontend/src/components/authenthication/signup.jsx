@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 
 import React, { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 const signup = () => {
   const [show, setShow] = useState(false);
 
@@ -25,6 +25,7 @@ const signup = () => {
   const [loading, setLoading] = useState(false);
     const [picLoading,setPicLoading]=useState(false)
     const toast=useToast();
+    const  navigate=useNavigate();
  const clickHandler=()=>setShow(!show);
  
  const submitHandler=async()=>{
@@ -52,13 +53,15 @@ const signup = () => {
         }
 
         try {
+
             const config={
                 headers:{
                     "Content-Type":"application/json"
                 }
 
             }
-            const data= await fetch("http://localhost:8080/api/user",{
+
+            const data= await fetch("http://localhost:8080/api/register",{
                 method:"POST",
                 headers:config.headers,
                 body:JSON.stringify({
@@ -77,13 +80,18 @@ const signup = () => {
                 })
             }
             if(response.message=="User created successfully"){
+              
                 toast({
                     title:"User Created Successfully",
                     status:"success",
                     duration:5000,
                     isClosable:true,
                     position:"bottom"
-                })
+                });
+
+                localStorage.setItem("userInfo",JSON.stringify(response.DB_DATA));
+                navigate("/chats");
+
             }
             
             setPicLoading(false);

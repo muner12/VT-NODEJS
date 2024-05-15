@@ -22,7 +22,7 @@ router.post('/login',registerController.login);
 
 //let protected routes
 
-
+router.get('/',verifyJWT,registerController.allUser);
 router.post('/accessChat',verifyJWT,chatController.accessChat);
 router.post('/chats',verifyJWT,chatController.fetchChats);
 router.post('/createGroup',verifyJWT,chatController.createGroup);
