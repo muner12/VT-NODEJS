@@ -1,5 +1,12 @@
-.App{
-    background-image: url("./bg.jpg");
-    width: 100%;
-    min-height: 100vh
+.App {
+  background-image: url("./bg.jpg");
+  width: 100%;
+  min-height: 100vh;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
